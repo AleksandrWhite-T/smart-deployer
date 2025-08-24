@@ -1,0 +1,24 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running Foundry checks..."
+
+# Check formatting
+if ! forge fmt --check; then
+  echo "❌ Formatting check failed. Please run 'forge fmt'."
+  exit 1
+fi
+
+# Build contracts
+if ! forge build --sizes; then
+  echo "❌ Build failed. Please fix build errors."
+  exit 1
+fi
+
+# Run tests
+if ! forge test -vvv; then
+  echo "❌ Tests failed. Please fix test errors."
+  exit 1
+fi
+
+echo "✅ All Foundry checks passed!"

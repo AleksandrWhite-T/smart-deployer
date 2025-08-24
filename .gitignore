@@ -1,0 +1,10 @@
+.deps
+.states
+.cache
+artifacts
+contracts/artifacts
+lib/
+cache/
+out/
+node_modules/
+.mypy_cache/
