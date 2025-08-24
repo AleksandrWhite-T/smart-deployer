@@ -26,18 +26,40 @@ interface IDeployManager is IERC165 {
     /// @dev Reverts if the contract is not a utility contract
     error ContractIsNotUtilityContract();
 
+    /// @dev Reverts if the contract already registered
+    error AlreadyRegistered();
+
     // ------------------------------------------------------------------------
     // Events
     // ------------------------------------------------------------------------
 
-    /// @notice Emitted when a new utility contract template is registered.
-    /// @param _contractAddress Address of the registered utility contract template.
-    /// @param _fee Fee (in wei) required to deploy a clone of this contract.
-    /// @param _isActive Whether the contract is active and deployable.
-    /// @param _timestamp Timestamp when the contract was added.
+    /// @notice Emitted when a new utility contract template is registered
+    /// @param _contractAddress Address of the registered utility contract template
+    /// @param _fee Fee (in wei) required to deploy a clone of this contract
+    /// @param _isActive Whether the contract is active and deployable
+    /// @param _timestamp Timestamp when the contract was added
     event NewContractAdded(address indexed _contractAddress, uint256 _fee, bool _isActive, uint256 _timestamp);
+
+    // @notice Emitted when a contract deployment fee is updated
+    ///@param _contractAddress Address of the registered utility contract
+    /// @param _oldFee (in wei) required to deploy contract before update
+    /// @param _newFee (in wei) required to deploy contract after update
+    /// @param _timestamp Timestamp of fee update
+    
     event ContractFeeUpdated(address indexed _contractAddress, uint256 _oldFee, uint256 _newFee, uint256 _timestamp);
+
+    // @notice Emitted when a contract active status is updated
+    ///@param _contractAddress Address of the registered utility contract
+    /// @param _isActive Ture if the contract can be deployed
+    /// @param _timestamp Timestamp of status  update
     event ContractStatusUpdated(address indexed _contractAddress, bool _isActive, uint256 _timestamp);
+
+    // @notice Emitted when new utility contract is deployed 
+    /// @param _deployer Address that initiated deployment
+    /// @param _contractAddress Address of the utility contract
+    /// @param _fee (in wei) paid for deployment 
+    /// @param _timestamp Timestamp of deployment
+
     event NewDeployment(address indexed _deployer, address indexed _contractAddress, uint256 _fee, uint256 _timestamp);
 
     // ------------------------------------------------------------------------
@@ -45,13 +67,32 @@ interface IDeployManager is IERC165 {
     // ------------------------------------------------------------------------
 
     /// @notice Deploys a new utility contract
-    /// @param _utilityContract The address of the utility contract template
+    /// @param _utilityContract The address of the registered utility contract
     /// @param _initData The initialization data for the utility contract
     /// @return The address of the deployed utility contract
     /// @dev Emits NewDeployment event
     function deploy(address _utilityContract, bytes calldata _initData) external payable returns (address);
+
+    /// @notice Registers a new utility contract
+    /// @param _contractAddress The address of the utility contract template 
+    /// @param _fee fee (in wei) required for the deployment
+    /// @param _isActive Ture if the contract can be deployed immediately
+    /// @dev Emits a {NewContractAdded} event
     function addNewContract(address _contractAddress, uint256 _fee, bool _isActive) external;
+
+    /// @notice Updates the deployment fee of a registered utility contract template
+    /// @param _contractAddress Address of the registered utility contract template
+    /// @param _newFee New deployment fee in wei
+    /// @dev Emits a {ContractFeeUpdated} event
     function updateFee(address _contractAddress, uint256 _newFee) external;
+
+    // @notice Deactivates a registered utility contract template
+    /// @param _contractAddress Address of the utility contract template to deactivate
+    /// @dev Emits a {ContractStatusUpdated} event
     function deactivateContract(address _contractAddress) external;
+
+    /// @notice Activates a registered utility contract template
+    /// @param _contractAddress Address of the utility contract template to activate
+    /// @dev Emits a {ContractStatusUpdated} event
     function activateContract(address _contractAddress) external;
 }

@@ -16,7 +16,7 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
 
     struct ContractInfo {
         uint256 fee;
-        bool isActive;
+        bool isDeployablel;
         uint256 registredAt;
     }
 
@@ -27,7 +27,7 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
     function deploy(address _utilityContract, bytes calldata _initData) external payable override returns (address) {
         ContractInfo memory info = contractsData[_utilityContract];
 
-        require(info.isActive, ContractNotActive());
+        require(info.isDeployablel, ContractNotActive());
         require(msg.value >= info.fee, NotEnoughtFunds());
         require(info.registredAt > 0, ContractDoesNotRegistered());
 
@@ -49,8 +49,9 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
             IUtilityContract(_contractAddress).supportsInterface(type(IUtilityContract).interfaceId),
             ContractIsNotUtilityContract()
         );
+        require(contractsData[_contractAddress].registredAt == 0,AlreadyRegistered());
 
-        contractsData[_contractAddress] = ContractInfo({fee: _fee, isActive: _isActive, registredAt: block.timestamp});
+        contractsData[_contractAddress] = ContractInfo({fee: _fee, isDeployablel: _isActive, registredAt: block.timestamp});
 
         emit NewContractAdded(_contractAddress, _fee, _isActive, block.timestamp);
     }
@@ -67,7 +68,7 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
     function deactivateContract(address _address) external override onlyOwner {
         require(contractsData[_address].registredAt > 0, ContractDoesNotRegistered());
 
-        contractsData[_address].isActive = false;
+        contractsData[_address].isDeployablel = false;
 
         emit ContractStatusUpdated(_address, false, block.timestamp);
     }
@@ -75,7 +76,7 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
     function activateContract(address _address) external override onlyOwner {
         require(contractsData[_address].registredAt > 0, ContractDoesNotRegistered());
 
-        contractsData[_address].isActive = true;
+        contractsData[_address].isDeployablel = true;
 
         emit ContractStatusUpdated(_address, true, block.timestamp);
     }
