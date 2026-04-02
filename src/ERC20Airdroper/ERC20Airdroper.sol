@@ -92,13 +92,8 @@ contract ERC20Airdroper is AbstractUtilityContract, Ownable {
     /// @return True if initialization is successful
     /// @dev This function can only be called once by the DeployManager during deployment
     function initialize(bytes memory _initData) external override notInitialized returns (bool) {
-        (
-            address _deployManager,
-            address _token,
-            uint256 _amount,
-            address _treasury,
-            address _owner
-        ) = abi.decode(_initData, (address, address, uint256, address, address));
+        (address _deployManager, address _token, uint256 _amount, address _treasury, address _owner) =
+            abi.decode(_initData, (address, address, uint256, address, address));
 
         // Validate and set the DeployManager
         setDeployManager(_deployManager);
@@ -127,13 +122,11 @@ contract ERC20Airdroper is AbstractUtilityContract, Ownable {
     /// @param _treasury Treasury address holding the tokens
     /// @param _owner Owner address for this contract
     /// @return Encoded data ready for initialization
-    function getInitData(
-        address _deployManager,
-        address _token,
-        uint256 _amount,
-        address _treasury,
-        address _owner
-    ) external pure returns (bytes memory) {
+    function getInitData(address _deployManager, address _token, uint256 _amount, address _treasury, address _owner)
+        external
+        pure
+        returns (bytes memory)
+    {
         return abi.encode(_deployManager, _token, _amount, _treasury, _owner);
     }
 }

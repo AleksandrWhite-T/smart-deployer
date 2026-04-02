@@ -45,7 +45,7 @@ interface IDeployManager is IERC165 {
     /// @param _oldFee (in wei) required to deploy contract before update
     /// @param _newFee (in wei) required to deploy contract after update
     /// @param _timestamp Timestamp of fee update
-    
+
     event ContractFeeUpdated(address indexed _contractAddress, uint256 _oldFee, uint256 _newFee, uint256 _timestamp);
 
     // @notice Emitted when a contract active status is updated
@@ -54,10 +54,10 @@ interface IDeployManager is IERC165 {
     /// @param _timestamp Timestamp of status  update
     event ContractStatusUpdated(address indexed _contractAddress, bool _isActive, uint256 _timestamp);
 
-    // @notice Emitted when new utility contract is deployed 
+    // @notice Emitted when new utility contract is deployed
     /// @param _deployer Address that initiated deployment
     /// @param _contractAddress Address of the utility contract
-    /// @param _fee (in wei) paid for deployment 
+    /// @param _fee (in wei) paid for deployment
     /// @param _timestamp Timestamp of deployment
 
     event NewDeployment(address indexed _deployer, address indexed _contractAddress, uint256 _fee, uint256 _timestamp);
@@ -74,7 +74,7 @@ interface IDeployManager is IERC165 {
     function deploy(address _utilityContract, bytes calldata _initData) external payable returns (address);
 
     /// @notice Registers a new utility contract
-    /// @param _contractAddress The address of the utility contract template 
+    /// @param _contractAddress The address of the utility contract template
     /// @param _fee fee (in wei) required for the deployment
     /// @param _isActive Ture if the contract can be deployed immediately
     /// @dev Emits a {NewContractAdded} event

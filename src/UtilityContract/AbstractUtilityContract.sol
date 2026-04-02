@@ -93,13 +93,7 @@ abstract contract AbstractUtilityContract is IUtilityContract, ERC165 {
     /// @notice Indicates support for IUtilityContract and ERC165 interfaces
     /// @param interfaceId The interface identifier to check
     /// @return True if the contract supports the provided interface
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(IERC165, ERC165)
-        returns (bool)
-    {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
         return interfaceId == type(IUtilityContract).interfaceId || super.supportsInterface(interfaceId);
     }
 }

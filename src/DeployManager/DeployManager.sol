@@ -49,9 +49,10 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
             IUtilityContract(_contractAddress).supportsInterface(type(IUtilityContract).interfaceId),
             ContractIsNotUtilityContract()
         );
-        require(contractsData[_contractAddress].registredAt == 0,AlreadyRegistered());
+        require(contractsData[_contractAddress].registredAt == 0, AlreadyRegistered());
 
-        contractsData[_contractAddress] = ContractInfo({fee: _fee, isDeployablel: _isActive, registredAt: block.timestamp});
+        contractsData[_contractAddress] =
+            ContractInfo({fee: _fee, isDeployablel: _isActive, registredAt: block.timestamp});
 
         emit NewContractAdded(_contractAddress, _fee, _isActive, block.timestamp);
     }
