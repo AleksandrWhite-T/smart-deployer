@@ -1,5 +1,5 @@
 # IUtilityContract
-[Git Source](https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/UtilityContract/IUtilityContract.sol)
+[Git Source](https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src\UtilityContract\IUtilityContract.sol)
 
 **Inherits:**
 IERC165
@@ -7,9 +7,9 @@ IERC165
 **Author:**
 Solidity University
 
-This interface defines the functions and events for utility contracts.
+This interface defines the core functions and errors for utility contracts.
 
-*Utility contracts should implement this interface to be compatible with the DeployManager.*
+*Any contract intended to work with the DeployManager must implement this interface.*
 
 
 ## Functions
@@ -17,7 +17,7 @@ This interface defines the functions and events for utility contracts.
 
 Initializes the utility contract with the provided data
 
-*This function should be called by the DeployManager after deploying the contract*
+*This function should be called by the DeployManager right after the contract is cloned.*
 
 
 ```solidity
@@ -27,25 +27,33 @@ function initialize(bytes memory _initData) external returns (bool);
 
 |Name|Type|Description|
 |----|----|-----------|
-|`_initData`|`bytes`|The initialization data for the utility contract|
+|`_initData`|`bytes`|Encoded initialization parameters for the utility contract|
 
 **Returns**
 
 |Name|Type|Description|
 |----|----|-----------|
-|`<none>`|`bool`|True if the initialization was successful|
+|`<none>`|`bool`|True if initialization was successful|
 
 
 ### getDeployManager
+
+Returns the address of the DeployManager linked to this utility contract
 
 
 ```solidity
 function getDeployManager() external view returns (address);
 ```
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`address`|The DeployManager address|
+
 
 ## Errors
 ### DeployManagerCannotBeZero
-*Reverts if the deploy manager is not set or is invalid*
+*Reverts if the DeployManager address is zero (not set)*
 
 
 ```solidity
@@ -53,18 +61,24 @@ error DeployManagerCannotBeZero();
 ```
 
 ### NotDeployManager
+*Reverts if a function is called by someone other than the DeployManager*
+
 
 ```solidity
 error NotDeployManager();
 ```
 
 ### FailedToDeployManager
+*Reverts if setting the DeployManager fails*
+
 
 ```solidity
 error FailedToDeployManager();
 ```
 
 ### AlreadyInitialized
+*Reverts if the contract has already been initialized*
+
 
 ```solidity
 error AlreadyInitialized();

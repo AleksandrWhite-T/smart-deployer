@@ -1,5 +1,5 @@
 # VestingLib
-[Git Source](https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/Vesting/VestingLib.sol)
+[Git Source](https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src\Vesting\VestingLib.sol)
 
 Provides utility functions for calculating vested and claimable token amounts
 

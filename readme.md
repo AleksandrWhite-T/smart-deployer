@@ -2,7 +2,7 @@
 
 Smart Deployer is a universal solution for organizing and managing paid smart contract deployments.
 
-📚 [Contracts documentation](https://solidityuniversity.github.io/smart-deployer/book/)  
+📚 [Contracts documentation](https://aleksandrwhite-t.github.io/smart-deployer/) (generated with `forge doc`)  
 🎓 [Solidity Bootcamp](https://bootcamp.solidity.university)
 
 🧾 Every contract in this repository is fully documented using NatSpec — including deployment instructions, configuration details, and extensibility tips. Developed by Solidity University, following best practices and released under the MIT license, allows developers to:
@@ -55,7 +55,9 @@ To generate contract documentation:
 forge doc --build --out docs
 ```
 
-The generated documentation will be available in the `docs/` folder and automatically deploy to [github pages](https://solidityuniversity.github.io/smart-deployer/book/). Make sure there is no `.gitignore` file inside `docs/`.
+The generated site is written to `docs/book/`. After you enable **GitHub Pages** (Source: **GitHub Actions**) in the repository settings, pushes to `main` or `smart-deployer` deploy the book to [https://aleksandrwhite-t.github.io/smart-deployer/](https://aleksandrwhite-t.github.io/smart-deployer/). Do not add a `.gitignore` inside `docs/` that hides the mdBook sources.
+
+**Note:** The user site `https://USERNAME.github.io/` without a path applies only to a repository named `USERNAME.github.io`. This project uses **project Pages** at the URL above.
 
 ---
 

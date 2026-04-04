@@ -39,11 +39,23 @@
             const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../../../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -84,10 +96,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -121,7 +136,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -132,7 +147,7 @@
                         <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/SolidityUniversity/smart-deployer" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/AleksandrWhite-T/smart-deployer" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -162,7 +182,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="ideploymanager"><a class="header" href="#ideploymanager">IDeployManager</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/DeployManager/IDeployManager.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CDeployManager%5CIDeployManager.sol">Git Source</a></p>
 <p><strong>Inherits:</strong>
 IERC165</p>
 <p><strong>Author:</strong>
@@ -176,7 +196,7 @@ Solidity Univesity</p>
 </code></pre>
 <p><strong>Parameters</strong></p>
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>_utilityContract</code></td><td><code>address</code></td><td>The address of the utility contract template</td></tr>
+<tr><td><code>_utilityContract</code></td><td><code>address</code></td><td>The address of the registered utility contract</td></tr>
 <tr><td><code>_initData</code></td><td><code>bytes</code></td><td>The initialization data for the utility contract</td></tr>
 </tbody></table>
 </div>
@@ -186,39 +206,92 @@ Solidity Univesity</p>
 </tbody></table>
 </div>
 <h3 id="addnewcontract"><a class="header" href="#addnewcontract">addNewContract</a></h3>
+<p>Registers a new utility contract</p>
+<p><em>Emits a <a href="/src%5CDeployManager%5CIDeployManager.sol%5Cinterface.IDeployManager.html#newcontractadded">NewContractAdded</a> event</em></p>
 <pre><code class="language-solidity">function addNewContract(address _contractAddress, uint256 _fee, bool _isActive) external;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>The address of the utility contract template</td></tr>
+<tr><td><code>_fee</code></td><td><code>uint256</code></td><td>fee (in wei) required for the deployment</td></tr>
+<tr><td><code>_isActive</code></td><td><code>bool</code></td><td>Ture if the contract can be deployed immediately</td></tr>
+</tbody></table>
+</div>
 <h3 id="updatefee"><a class="header" href="#updatefee">updateFee</a></h3>
+<p>Updates the deployment fee of a registered utility contract template</p>
+<p><em>Emits a <a href="/src%5CDeployManager%5CIDeployManager.sol%5Cinterface.IDeployManager.html#contractfeeupdated">ContractFeeUpdated</a> event</em></p>
 <pre><code class="language-solidity">function updateFee(address _contractAddress, uint256 _newFee) external;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract template</td></tr>
+<tr><td><code>_newFee</code></td><td><code>uint256</code></td><td>New deployment fee in wei</td></tr>
+</tbody></table>
+</div>
 <h3 id="deactivatecontract"><a class="header" href="#deactivatecontract">deactivateContract</a></h3>
+<p><em>Emits a <a href="/src%5CDeployManager%5CIDeployManager.sol%5Cinterface.IDeployManager.html#contractstatusupdated">ContractStatusUpdated</a> event</em></p>
 <pre><code class="language-solidity">function deactivateContract(address _contractAddress) external;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the utility contract template to deactivate</td></tr>
+</tbody></table>
+</div>
 <h3 id="activatecontract"><a class="header" href="#activatecontract">activateContract</a></h3>
+<p>Activates a registered utility contract template</p>
+<p><em>Emits a <a href="/src%5CDeployManager%5CIDeployManager.sol%5Cinterface.IDeployManager.html#contractstatusupdated">ContractStatusUpdated</a> event</em></p>
 <pre><code class="language-solidity">function activateContract(address _contractAddress) external;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the utility contract template to activate</td></tr>
+</tbody></table>
+</div>
 <h2 id="events"><a class="header" href="#events">Events</a></h2>
 <h3 id="newcontractadded"><a class="header" href="#newcontractadded">NewContractAdded</a></h3>
-<p>Emitted when a new utility contract template is registered.</p>
+<p>Emitted when a new utility contract template is registered</p>
 <pre><code class="language-solidity">event NewContractAdded(address indexed _contractAddress, uint256 _fee, bool _isActive, uint256 _timestamp);
 </code></pre>
 <p><strong>Parameters</strong></p>
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract template.</td></tr>
-<tr><td><code>_fee</code></td><td><code>uint256</code></td><td>Fee (in wei) required to deploy a clone of this contract.</td></tr>
-<tr><td><code>_isActive</code></td><td><code>bool</code></td><td>Whether the contract is active and deployable.</td></tr>
-<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp when the contract was added.</td></tr>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract template</td></tr>
+<tr><td><code>_fee</code></td><td><code>uint256</code></td><td>Fee (in wei) required to deploy a clone of this contract</td></tr>
+<tr><td><code>_isActive</code></td><td><code>bool</code></td><td>Whether the contract is active and deployable</td></tr>
+<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp when the contract was added</td></tr>
 </tbody></table>
 </div>
 <h3 id="contractfeeupdated"><a class="header" href="#contractfeeupdated">ContractFeeUpdated</a></h3>
 <pre><code class="language-solidity">event ContractFeeUpdated(address indexed _contractAddress, uint256 _oldFee, uint256 _newFee, uint256 _timestamp);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract</td></tr>
+<tr><td><code>_oldFee</code></td><td><code>uint256</code></td><td>(in wei) required to deploy contract before update</td></tr>
+<tr><td><code>_newFee</code></td><td><code>uint256</code></td><td>(in wei) required to deploy contract after update</td></tr>
+<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp of fee update</td></tr>
+</tbody></table>
+</div>
 <h3 id="contractstatusupdated"><a class="header" href="#contractstatusupdated">ContractStatusUpdated</a></h3>
 <pre><code class="language-solidity">event ContractStatusUpdated(address indexed _contractAddress, bool _isActive, uint256 _timestamp);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract</td></tr>
+<tr><td><code>_isActive</code></td><td><code>bool</code></td><td>Ture if the contract can be deployed</td></tr>
+<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp of status  update</td></tr>
+</tbody></table>
+</div>
 <h3 id="newdeployment"><a class="header" href="#newdeployment">NewDeployment</a></h3>
 <pre><code class="language-solidity">event NewDeployment(address indexed _deployer, address indexed _contractAddress, uint256 _fee, uint256 _timestamp);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_deployer</code></td><td><code>address</code></td><td>Address that initiated deployment</td></tr>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the utility contract</td></tr>
+<tr><td><code>_fee</code></td><td><code>uint256</code></td><td>(in wei) paid for deployment</td></tr>
+<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp of deployment</td></tr>
+</tbody></table>
+</div>
 <h2 id="errors"><a class="header" href="#errors">Errors</a></h2>
 <h3 id="contractnotactive"><a class="header" href="#contractnotactive">ContractNotActive</a></h3>
 <p><em>Reverts if the contract is not active</em></p>
@@ -239,6 +312,10 @@ Solidity Univesity</p>
 <h3 id="contractisnotutilitycontract"><a class="header" href="#contractisnotutilitycontract">ContractIsNotUtilityContract</a></h3>
 <p><em>Reverts if the contract is not a utility contract</em></p>
 <pre><code class="language-solidity">error ContractIsNotUtilityContract();
+</code></pre>
+<h3 id="alreadyregistered"><a class="header" href="#alreadyregistered">AlreadyRegistered</a></h3>
+<p><em>Reverts if the contract already registered</em></p>
+<pre><code class="language-solidity">error AlreadyRegistered();
 </code></pre>
 
                     </main>
@@ -288,6 +365,7 @@ Solidity Univesity</p>
 
         <!-- Custom JS scripts -->
         <script src="../../../solidity.min.js"></script>
+
 
 
     </div>

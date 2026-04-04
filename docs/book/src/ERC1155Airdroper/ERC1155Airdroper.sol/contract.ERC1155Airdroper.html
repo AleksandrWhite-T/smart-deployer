@@ -39,11 +39,23 @@
             const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../../../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -84,10 +96,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -121,7 +136,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -132,7 +147,7 @@
                         <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/SolidityUniversity/smart-deployer" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/AleksandrWhite-T/smart-deployer" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -162,48 +182,96 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="erc1155airdroper"><a class="header" href="#erc1155airdroper">ERC1155Airdroper</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/ERC1155Airdroper/ERC1155Airdroper.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CERC1155Airdroper%5CERC1155Airdroper.sol">Git Source</a></p>
 <p><strong>Inherits:</strong>
-<a href="/src/UtilityContract/AbstractUtilityContract.sol/abstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable</p>
+<a href="/src%5CUtilityContract%5CAbstractUtilityContract.sol%5Cabstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable2Step</p>
+<p><strong>Author:</strong>
+...</p>
+<p>Allows the contract owner to distribute ERC1155 tokens to multiple recipients in a single transaction.</p>
+<p><em>Inherits from AbstractUtilityContract for DeployManager integration and Ownable2Step for access control.</em></p>
 <h2 id="state-variables"><a class="header" href="#state-variables">State Variables</a></h2>
 <h3 id="max_airdrop_batch_size"><a class="header" href="#max_airdrop_batch_size">MAX_AIRDROP_BATCH_SIZE</a></h3>
+<p>Maximum number of recipients in a single airdrop batch</p>
 <pre><code class="language-solidity">uint256 public constant MAX_AIRDROP_BATCH_SIZE = 10;
 </code></pre>
 <h3 id="token"><a class="header" href="#token">token</a></h3>
+<p>ERC1155 token to distribute</p>
 <pre><code class="language-solidity">IERC1155 public token;
 </code></pre>
 <h3 id="treasury"><a class="header" href="#treasury">treasury</a></h3>
+<p>Treasury address that holds the tokens to be distributed</p>
 <pre><code class="language-solidity">address public treasury;
 </code></pre>
 <h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
 <h3 id="constructor"><a class="header" href="#constructor">constructor</a></h3>
+<p>Initializes ownership of the contract</p>
+<p><em>In OpenZeppelin v5, <code>Ownable</code> constructor takes no parameters and should be <code>Ownable()</code>.</em></p>
 <pre><code class="language-solidity">constructor() payable Ownable(msg.sender);
 </code></pre>
 <h3 id="airdrop"><a class="header" href="#airdrop">airdrop</a></h3>
+<p>Airdrop ERC1155 tokens to multiple addresses in a single batch</p>
+<p><em>Requires the treasury to approve this contract with <code>setApprovalForAll</code>.</em></p>
 <pre><code class="language-solidity">function airdrop(address[] calldata receivers, uint256[] calldata amounts, uint256[] calldata tokenIds)
     external
     onlyOwner;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>receivers</code></td><td><code>address[]</code></td><td>List of recipient addresses</td></tr>
+<tr><td><code>amounts</code></td><td><code>uint256[]</code></td><td>List of token amounts to send to each recipient</td></tr>
+<tr><td><code>tokenIds</code></td><td><code>uint256[]</code></td><td>List of token IDs corresponding to each recipient</td></tr>
+</tbody></table>
+</div>
 <h3 id="initialize"><a class="header" href="#initialize">initialize</a></h3>
+<p>Initializes the contract with configuration data</p>
+<p><em>This function can only be called once by the DeployManager during deployment.</em></p>
 <pre><code class="language-solidity">function initialize(bytes memory _initData) external override notInitialized returns (bool);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_initData</code></td><td><code>bytes</code></td><td>Encoded data containing deployManager, token, treasury, and owner addresses</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>Returns true if initialization succeeds</td></tr>
+</tbody></table>
+</div>
 <h3 id="getinitdata"><a class="header" href="#getinitdata">getInitData</a></h3>
+<p>Helper function to encode initialization data for DeployManager</p>
 <pre><code class="language-solidity">function getInitData(address _deployManager, address _token, address _treasury, address _owner)
     external
     pure
     returns (bytes memory);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_deployManager</code></td><td><code>address</code></td><td>DeployManager address</td></tr>
+<tr><td><code>_token</code></td><td><code>address</code></td><td>ERC1155 token address</td></tr>
+<tr><td><code>_treasury</code></td><td><code>address</code></td><td>Treasury address holding tokens</td></tr>
+<tr><td><code>_owner</code></td><td><code>address</code></td><td>Owner address for this contract</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bytes</code></td><td>Encoded data ready to be passed to initialize()</td></tr>
+</tbody></table>
+</div>
 <h2 id="errors"><a class="header" href="#errors">Errors</a></h2>
 <h3 id="receiverslengthmismatch"><a class="header" href="#receiverslengthmismatch">ReceiversLengthMismatch</a></h3>
+<p><em>Raised when the receivers array length does not match token IDs array length</em></p>
 <pre><code class="language-solidity">error ReceiversLengthMismatch();
 </code></pre>
 <h3 id="amountslengthmismatch"><a class="header" href="#amountslengthmismatch">AmountsLengthMismatch</a></h3>
+<p><em>Raised when the amounts array length does not match token IDs array length</em></p>
 <pre><code class="language-solidity">error AmountsLengthMismatch();
 </code></pre>
 <h3 id="batchsizeexceeded"><a class="header" href="#batchsizeexceeded">BatchSizeExceeded</a></h3>
+<p><em>Raised when trying to airdrop more tokens than the allowed batch size</em></p>
 <pre><code class="language-solidity">error BatchSizeExceeded();
 </code></pre>
 <h3 id="needtoapprovetokens"><a class="header" href="#needtoapprovetokens">NeedToApproveTokens</a></h3>
+<p><em>Raised when the contract is not approved to transfer tokens from the treasury</em></p>
 <pre><code class="language-solidity">error NeedToApproveTokens();
 </code></pre>
 
@@ -254,6 +322,7 @@
 
         <!-- Custom JS scripts -->
         <script src="../../../solidity.min.js"></script>
+
 
 
     </div>

@@ -1,12 +1,12 @@
 # Vesting
-[Git Source](https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/Vesting/Vesting.sol)
+[Git Source](https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src\Vesting\Vesting.sol)
 
 **Inherits:**
-[IVesting](/src/Vesting/IVesting.sol/interface.IVesting.md), [AbstractUtilityContract](/src/UtilityContract/AbstractUtilityContract.sol/abstract.AbstractUtilityContract.md), Ownable
+[IVesting](/src\Vesting\IVesting.sol\interface.IVesting.md), [AbstractUtilityContract](/src\UtilityContract\AbstractUtilityContract.sol\abstract.AbstractUtilityContract.md), Ownable2Step
 
 Manages token vesting schedules for beneficiaries
 
-*Inherits IVesting, AbstractUtilityContract, Ownable*
+*Inherits IVesting, AbstractUtilityContract, Ownable2Step*
 
 
 ## State Variables
@@ -88,10 +88,26 @@ function withdrawUnallocated(address _to) external onlyOwner;
 
 ### initialize
 
+Initializes the contract with encoded initialization data
+
+*Typically called by the DeployManager right after deploying the clone*
+
 
 ```solidity
 function initialize(bytes memory _initData) external override notInitialized returns (bool);
 ```
+**Parameters**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`_initData`|`bytes`|Encoded address of the DeployManager|
+
+**Returns**
+
+|Name|Type|Description|
+|----|----|-----------|
+|`<none>`|`bool`|Returns true if initialization succeeds|
+
 
 ### vestedAmount
 

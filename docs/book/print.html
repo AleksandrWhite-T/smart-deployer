@@ -40,11 +40,23 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -85,10 +97,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -122,7 +137,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -133,7 +148,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/SolidityUniversity/smart-deployer" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/AleksandrWhite-T/smart-deployer" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -142,7 +157,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -163,31 +183,59 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="smart-deployer"><a class="header" href="#smart-deployer">Smart Deployer</a></h1>
-<p>Smart Deployer is a universal architecture for organizing and managing paid smart contract deployments.</p>
-<p>This solution allows developers to:</p>
+<p>Smart Deployer is a universal solution for organizing and managing paid smart contract deployments.</p>
+<p>📚 <a href="https://aleksandrwhite-t.github.io/smart-deployer/">Contracts documentation</a> (generated with <code>forge doc</code>)<br />
+🎓 <a href="https://bootcamp.solidity.university">Solidity Bootcamp</a></p>
+<p>🧾 Every contract in this repository is fully documented using NatSpec — including deployment instructions, configuration details, and extensibility tips. Developed by Solidity University, following best practices and released under the MIT license, allows developers to:</p>
 <ul>
-<li>Create their own Smart Deployer (DeployManager.sol)</li>
-<li>Create &amp; connect utility contracts using template</li>
+<li>Deploy your own <code>DeployManager.sol</code></li>
+<li>Create &amp; connect utility contracts using <a href="https://github.com/SolidityUniversity/smart-deployer/blob/main/src/UtilityContract/AbstractUtilityContract.sol">template</a></li>
 <li>Monetize the deployment of utility contracts</li>
+<li>Enable\disable contracts, fees any time</li>
 </ul>
+<p><img src="./docs/smart-deployer.png" alt="Smart deployer diagram" /></p>
 <blockquote>
-<p>The repository is currently under development.
-We are building it as part of the Solidity University Bootcamp program.</p>
+<p>💡 We are building it as part of the <a href="https://bootcamp.solidity.university">Solidity University Bootcamp</a> program. Learn Solidity with us at <a href="https://solidity.university">Solidity University</a>!</p>
 </blockquote>
-<p>👉 More details: <a href="https://bootcamp.solidity.university">bootcamp.solidity.university</a></p>
+<hr />
+<h2 id="-getting-started"><a class="header" href="#-getting-started">🚀 Getting Started</a></h2>
+<p>To start working with this repository, clone it and install all necessary dependencies.</p>
+<pre><code class="language-bash">git clone https://github.com/solidity-university/smart-deployer.git
+cd smart-deployer
+yarn install
+</code></pre>
+<blockquote>
+<p>✅ Make sure you have <a href="https://book.getfoundry.sh/getting-started/installation">Foundry</a> installed globally before continuing:</p>
+</blockquote>
+<hr />
+<h2 id="-build-the-project"><a class="header" href="#-build-the-project">🛠 Build the Project</a></h2>
+<p>Compile the contracts using:</p>
+<pre><code class="language-bash">forge build
+</code></pre>
+<p>You can run 🧪 tests using:</p>
+<pre><code class="language-bash">forge test
+</code></pre>
+<h2 id="-generate-documentation"><a class="header" href="#-generate-documentation">📚 Generate Documentation</a></h2>
+<p>To generate contract documentation:</p>
+<pre><code class="language-bash">forge doc --build --out docs
+</code></pre>
+<p>The generated site is written to <code>docs/book/</code>. After you enable <strong>GitHub Pages</strong> (Source: <strong>GitHub Actions</strong>) in the repository settings, pushes to <code>main</code> or <code>smart-deployer</code> deploy the book to <a href="https://aleksandrwhite-t.github.io/smart-deployer/">https://aleksandrwhite-t.github.io/smart-deployer/</a>. Do not add a <code>.gitignore</code> inside <code>docs/</code> that hides the mdBook sources.</p>
+<p><strong>Note:</strong> The user site <code>https://USERNAME.github.io/</code> without a path applies only to a repository named <code>USERNAME.github.io</code>. This project uses <strong>project Pages</strong> at the URL above.</p>
+<hr />
+<p>Feel free to contribute or open issues to improve the project 💡</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="contents"><a class="header" href="#contents">Contents</a></h1>
 <ul>
-<li><a href="src/DeployManager/DeployManager.sol/contract.DeployManager.html">DeployManager</a></li>
-<li><a href="src/DeployManager/IDeployManager.sol/interface.IDeployManager.html">IDeployManager</a></li>
+<li><a href="src%5CDeployManager/DeployManager.sol%5Ccontract.DeployManager.html">DeployManager</a></li>
+<li><a href="src%5CDeployManager/IDeployManager.sol%5Cinterface.IDeployManager.html">IDeployManager</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="deploymanager"><a class="header" href="#deploymanager">DeployManager</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/DeployManager/DeployManager.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CDeployManager%5CDeployManager.sol">Git Source</a></p>
 <p><strong>Inherits:</strong>
-<a href="src/DeployManager/DeployManager.sol//src/DeployManager/IDeployManager.sol/interface.IDeployManager.html">IDeployManager</a>, Ownable, ERC165</p>
+<a href="src%5CDeployManager%5CDeployManager.sol//src%5CDeployManager%5CIDeployManager.sol%5Cinterface.IDeployManager.html">IDeployManager</a>, Ownable2Step, ERC165</p>
 <p><strong>Author:</strong>
 Solidity University</p>
 <p>Allows users to deploy utility contracts by cloning registered templates.</p>
-<p><em>Uses OpenZeppelin's Clones and Ownable; assumes templates implement IUtilityContract.</em></p>
+<p><em>Uses OpenZeppelin's Clones and Ownable2Step; assumes templates implement IUtilityContract.</em></p>
 <h2 id="state-variables"><a class="header" href="#state-variables">State Variables</a></h2>
 <h3 id="deployedcontracts"><a class="header" href="#deployedcontracts">deployedContracts</a></h3>
 <pre><code class="language-solidity">mapping(address =&gt; address[]) public deployedContracts;
@@ -206,7 +254,7 @@ Solidity University</p>
 </code></pre>
 <p><strong>Parameters</strong></p>
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>_utilityContract</code></td><td><code>address</code></td><td>The address of the utility contract template</td></tr>
+<tr><td><code>_utilityContract</code></td><td><code>address</code></td><td>The address of the registered utility contract</td></tr>
 <tr><td><code>_initData</code></td><td><code>bytes</code></td><td>The initialization data for the utility contract</td></tr>
 </tbody></table>
 </div>
@@ -234,12 +282,12 @@ Solidity University</p>
 <h3 id="contractinfo"><a class="header" href="#contractinfo">ContractInfo</a></h3>
 <pre><code class="language-solidity">struct ContractInfo {
     uint256 fee;
-    bool isActive;
+    bool isDeployablel;
     uint256 registredAt;
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ideploymanager"><a class="header" href="#ideploymanager">IDeployManager</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/DeployManager/IDeployManager.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CDeployManager%5CIDeployManager.sol">Git Source</a></p>
 <p><strong>Inherits:</strong>
 IERC165</p>
 <p><strong>Author:</strong>
@@ -253,7 +301,7 @@ Solidity Univesity</p>
 </code></pre>
 <p><strong>Parameters</strong></p>
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>_utilityContract</code></td><td><code>address</code></td><td>The address of the utility contract template</td></tr>
+<tr><td><code>_utilityContract</code></td><td><code>address</code></td><td>The address of the registered utility contract</td></tr>
 <tr><td><code>_initData</code></td><td><code>bytes</code></td><td>The initialization data for the utility contract</td></tr>
 </tbody></table>
 </div>
@@ -263,39 +311,92 @@ Solidity Univesity</p>
 </tbody></table>
 </div>
 <h3 id="addnewcontract-1"><a class="header" href="#addnewcontract-1">addNewContract</a></h3>
+<p>Registers a new utility contract</p>
+<p><em>Emits a <a href="src%5CDeployManager%5CIDeployManager.sol//src%5CDeployManager%5CIDeployManager.sol%5Cinterface.IDeployManager.html#newcontractadded">NewContractAdded</a> event</em></p>
 <pre><code class="language-solidity">function addNewContract(address _contractAddress, uint256 _fee, bool _isActive) external;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>The address of the utility contract template</td></tr>
+<tr><td><code>_fee</code></td><td><code>uint256</code></td><td>fee (in wei) required for the deployment</td></tr>
+<tr><td><code>_isActive</code></td><td><code>bool</code></td><td>Ture if the contract can be deployed immediately</td></tr>
+</tbody></table>
+</div>
 <h3 id="updatefee-1"><a class="header" href="#updatefee-1">updateFee</a></h3>
+<p>Updates the deployment fee of a registered utility contract template</p>
+<p><em>Emits a <a href="src%5CDeployManager%5CIDeployManager.sol//src%5CDeployManager%5CIDeployManager.sol%5Cinterface.IDeployManager.html#contractfeeupdated">ContractFeeUpdated</a> event</em></p>
 <pre><code class="language-solidity">function updateFee(address _contractAddress, uint256 _newFee) external;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract template</td></tr>
+<tr><td><code>_newFee</code></td><td><code>uint256</code></td><td>New deployment fee in wei</td></tr>
+</tbody></table>
+</div>
 <h3 id="deactivatecontract-1"><a class="header" href="#deactivatecontract-1">deactivateContract</a></h3>
+<p><em>Emits a <a href="src%5CDeployManager%5CIDeployManager.sol//src%5CDeployManager%5CIDeployManager.sol%5Cinterface.IDeployManager.html#contractstatusupdated">ContractStatusUpdated</a> event</em></p>
 <pre><code class="language-solidity">function deactivateContract(address _contractAddress) external;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the utility contract template to deactivate</td></tr>
+</tbody></table>
+</div>
 <h3 id="activatecontract-1"><a class="header" href="#activatecontract-1">activateContract</a></h3>
+<p>Activates a registered utility contract template</p>
+<p><em>Emits a <a href="src%5CDeployManager%5CIDeployManager.sol//src%5CDeployManager%5CIDeployManager.sol%5Cinterface.IDeployManager.html#contractstatusupdated">ContractStatusUpdated</a> event</em></p>
 <pre><code class="language-solidity">function activateContract(address _contractAddress) external;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the utility contract template to activate</td></tr>
+</tbody></table>
+</div>
 <h2 id="events"><a class="header" href="#events">Events</a></h2>
 <h3 id="newcontractadded"><a class="header" href="#newcontractadded">NewContractAdded</a></h3>
-<p>Emitted when a new utility contract template is registered.</p>
+<p>Emitted when a new utility contract template is registered</p>
 <pre><code class="language-solidity">event NewContractAdded(address indexed _contractAddress, uint256 _fee, bool _isActive, uint256 _timestamp);
 </code></pre>
 <p><strong>Parameters</strong></p>
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract template.</td></tr>
-<tr><td><code>_fee</code></td><td><code>uint256</code></td><td>Fee (in wei) required to deploy a clone of this contract.</td></tr>
-<tr><td><code>_isActive</code></td><td><code>bool</code></td><td>Whether the contract is active and deployable.</td></tr>
-<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp when the contract was added.</td></tr>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract template</td></tr>
+<tr><td><code>_fee</code></td><td><code>uint256</code></td><td>Fee (in wei) required to deploy a clone of this contract</td></tr>
+<tr><td><code>_isActive</code></td><td><code>bool</code></td><td>Whether the contract is active and deployable</td></tr>
+<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp when the contract was added</td></tr>
 </tbody></table>
 </div>
 <h3 id="contractfeeupdated"><a class="header" href="#contractfeeupdated">ContractFeeUpdated</a></h3>
 <pre><code class="language-solidity">event ContractFeeUpdated(address indexed _contractAddress, uint256 _oldFee, uint256 _newFee, uint256 _timestamp);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract</td></tr>
+<tr><td><code>_oldFee</code></td><td><code>uint256</code></td><td>(in wei) required to deploy contract before update</td></tr>
+<tr><td><code>_newFee</code></td><td><code>uint256</code></td><td>(in wei) required to deploy contract after update</td></tr>
+<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp of fee update</td></tr>
+</tbody></table>
+</div>
 <h3 id="contractstatusupdated"><a class="header" href="#contractstatusupdated">ContractStatusUpdated</a></h3>
 <pre><code class="language-solidity">event ContractStatusUpdated(address indexed _contractAddress, bool _isActive, uint256 _timestamp);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the registered utility contract</td></tr>
+<tr><td><code>_isActive</code></td><td><code>bool</code></td><td>Ture if the contract can be deployed</td></tr>
+<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp of status  update</td></tr>
+</tbody></table>
+</div>
 <h3 id="newdeployment"><a class="header" href="#newdeployment">NewDeployment</a></h3>
 <pre><code class="language-solidity">event NewDeployment(address indexed _deployer, address indexed _contractAddress, uint256 _fee, uint256 _timestamp);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_deployer</code></td><td><code>address</code></td><td>Address that initiated deployment</td></tr>
+<tr><td><code>_contractAddress</code></td><td><code>address</code></td><td>Address of the utility contract</td></tr>
+<tr><td><code>_fee</code></td><td><code>uint256</code></td><td>(in wei) paid for deployment</td></tr>
+<tr><td><code>_timestamp</code></td><td><code>uint256</code></td><td>Timestamp of deployment</td></tr>
+</tbody></table>
+</div>
 <h2 id="errors"><a class="header" href="#errors">Errors</a></h2>
 <h3 id="contractnotactive"><a class="header" href="#contractnotactive">ContractNotActive</a></h3>
 <p><em>Reverts if the contract is not active</em></p>
@@ -317,241 +418,440 @@ Solidity Univesity</p>
 <p><em>Reverts if the contract is not a utility contract</em></p>
 <pre><code class="language-solidity">error ContractIsNotUtilityContract();
 </code></pre>
+<h3 id="alreadyregistered"><a class="header" href="#alreadyregistered">AlreadyRegistered</a></h3>
+<p><em>Reverts if the contract already registered</em></p>
+<pre><code class="language-solidity">error AlreadyRegistered();
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="contents-1"><a class="header" href="#contents-1">Contents</a></h1>
 <ul>
-<li><a href="src/ERC1155Airdroper/ERC1155Airdroper.sol/contract.ERC1155Airdroper.html">ERC1155Airdroper</a></li>
+<li><a href="src%5CERC1155Airdroper/ERC1155Airdroper.sol%5Ccontract.ERC1155Airdroper.html">ERC1155Airdroper</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="erc1155airdroper"><a class="header" href="#erc1155airdroper">ERC1155Airdroper</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/ERC1155Airdroper/ERC1155Airdroper.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CERC1155Airdroper%5CERC1155Airdroper.sol">Git Source</a></p>
 <p><strong>Inherits:</strong>
-<a href="src/ERC1155Airdroper/ERC1155Airdroper.sol//src/UtilityContract/AbstractUtilityContract.sol/abstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable</p>
+<a href="src%5CERC1155Airdroper%5CERC1155Airdroper.sol//src%5CUtilityContract%5CAbstractUtilityContract.sol%5Cabstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable2Step</p>
+<p><strong>Author:</strong>
+...</p>
+<p>Allows the contract owner to distribute ERC1155 tokens to multiple recipients in a single transaction.</p>
+<p><em>Inherits from AbstractUtilityContract for DeployManager integration and Ownable2Step for access control.</em></p>
 <h2 id="state-variables-1"><a class="header" href="#state-variables-1">State Variables</a></h2>
 <h3 id="max_airdrop_batch_size"><a class="header" href="#max_airdrop_batch_size">MAX_AIRDROP_BATCH_SIZE</a></h3>
+<p>Maximum number of recipients in a single airdrop batch</p>
 <pre><code class="language-solidity">uint256 public constant MAX_AIRDROP_BATCH_SIZE = 10;
 </code></pre>
 <h3 id="token"><a class="header" href="#token">token</a></h3>
+<p>ERC1155 token to distribute</p>
 <pre><code class="language-solidity">IERC1155 public token;
 </code></pre>
 <h3 id="treasury"><a class="header" href="#treasury">treasury</a></h3>
+<p>Treasury address that holds the tokens to be distributed</p>
 <pre><code class="language-solidity">address public treasury;
 </code></pre>
 <h2 id="functions-2"><a class="header" href="#functions-2">Functions</a></h2>
 <h3 id="constructor-1"><a class="header" href="#constructor-1">constructor</a></h3>
+<p>Initializes ownership of the contract</p>
+<p><em>In OpenZeppelin v5, <code>Ownable</code> constructor takes no parameters and should be <code>Ownable()</code>.</em></p>
 <pre><code class="language-solidity">constructor() payable Ownable(msg.sender);
 </code></pre>
 <h3 id="airdrop"><a class="header" href="#airdrop">airdrop</a></h3>
+<p>Airdrop ERC1155 tokens to multiple addresses in a single batch</p>
+<p><em>Requires the treasury to approve this contract with <code>setApprovalForAll</code>.</em></p>
 <pre><code class="language-solidity">function airdrop(address[] calldata receivers, uint256[] calldata amounts, uint256[] calldata tokenIds)
     external
     onlyOwner;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>receivers</code></td><td><code>address[]</code></td><td>List of recipient addresses</td></tr>
+<tr><td><code>amounts</code></td><td><code>uint256[]</code></td><td>List of token amounts to send to each recipient</td></tr>
+<tr><td><code>tokenIds</code></td><td><code>uint256[]</code></td><td>List of token IDs corresponding to each recipient</td></tr>
+</tbody></table>
+</div>
 <h3 id="initialize"><a class="header" href="#initialize">initialize</a></h3>
+<p>Initializes the contract with configuration data</p>
+<p><em>This function can only be called once by the DeployManager during deployment.</em></p>
 <pre><code class="language-solidity">function initialize(bytes memory _initData) external override notInitialized returns (bool);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_initData</code></td><td><code>bytes</code></td><td>Encoded data containing deployManager, token, treasury, and owner addresses</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>Returns true if initialization succeeds</td></tr>
+</tbody></table>
+</div>
 <h3 id="getinitdata"><a class="header" href="#getinitdata">getInitData</a></h3>
+<p>Helper function to encode initialization data for DeployManager</p>
 <pre><code class="language-solidity">function getInitData(address _deployManager, address _token, address _treasury, address _owner)
     external
     pure
     returns (bytes memory);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_deployManager</code></td><td><code>address</code></td><td>DeployManager address</td></tr>
+<tr><td><code>_token</code></td><td><code>address</code></td><td>ERC1155 token address</td></tr>
+<tr><td><code>_treasury</code></td><td><code>address</code></td><td>Treasury address holding tokens</td></tr>
+<tr><td><code>_owner</code></td><td><code>address</code></td><td>Owner address for this contract</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bytes</code></td><td>Encoded data ready to be passed to initialize()</td></tr>
+</tbody></table>
+</div>
 <h2 id="errors-1"><a class="header" href="#errors-1">Errors</a></h2>
 <h3 id="receiverslengthmismatch"><a class="header" href="#receiverslengthmismatch">ReceiversLengthMismatch</a></h3>
+<p><em>Raised when the receivers array length does not match token IDs array length</em></p>
 <pre><code class="language-solidity">error ReceiversLengthMismatch();
 </code></pre>
 <h3 id="amountslengthmismatch"><a class="header" href="#amountslengthmismatch">AmountsLengthMismatch</a></h3>
+<p><em>Raised when the amounts array length does not match token IDs array length</em></p>
 <pre><code class="language-solidity">error AmountsLengthMismatch();
 </code></pre>
 <h3 id="batchsizeexceeded"><a class="header" href="#batchsizeexceeded">BatchSizeExceeded</a></h3>
+<p><em>Raised when trying to airdrop more tokens than the allowed batch size</em></p>
 <pre><code class="language-solidity">error BatchSizeExceeded();
 </code></pre>
 <h3 id="needtoapprovetokens"><a class="header" href="#needtoapprovetokens">NeedToApproveTokens</a></h3>
+<p><em>Raised when the contract is not approved to transfer tokens from the treasury</em></p>
 <pre><code class="language-solidity">error NeedToApproveTokens();
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="contents-2"><a class="header" href="#contents-2">Contents</a></h1>
 <ul>
-<li><a href="src/ERC20Airdroper/ERC20Airdroper.sol/contract.ERC20Airdroper.html">ERC20Airdroper</a></li>
+<li><a href="src%5CERC20Airdroper/ERC20Airdroper.sol%5Ccontract.ERC20Airdroper.html">ERC20Airdroper</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="erc20airdroper"><a class="header" href="#erc20airdroper">ERC20Airdroper</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/ERC20Airdroper/ERC20Airdroper.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CERC20Airdroper%5CERC20Airdroper.sol">Git Source</a></p>
 <p><strong>Inherits:</strong>
-<a href="src/ERC20Airdroper/ERC20Airdroper.sol//src/UtilityContract/AbstractUtilityContract.sol/abstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable</p>
+<a href="src%5CERC20Airdroper%5CERC20Airdroper.sol//src%5CUtilityContract%5CAbstractUtilityContract.sol%5Cabstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable2Step</p>
 <p><strong>Author:</strong>
 Solidity University</p>
-<p>This contract allows the owner to airdrop ERC20 tokens to multiple addresses.</p>
-<p><em>Inherits from AbstractUtilityContract and Ownable</em></p>
+<p>This contract allows the owner to distribute (airdrop) ERC20 tokens to multiple recipients.</p>
+<p><em>Inherits from AbstractUtilityContract for DeployManager integration and Ownable2Step for ownership control.</em></p>
 <h2 id="state-variables-2"><a class="header" href="#state-variables-2">State Variables</a></h2>
 <h3 id="max_airdrop_batch_size-1"><a class="header" href="#max_airdrop_batch_size-1">MAX_AIRDROP_BATCH_SIZE</a></h3>
+<p>Maximum number of recipients allowed in a single airdrop batch</p>
 <pre><code class="language-solidity">uint256 public constant MAX_AIRDROP_BATCH_SIZE = 300;
 </code></pre>
 <h3 id="token-1"><a class="header" href="#token-1">token</a></h3>
+<p>The ERC20 token to be distributed</p>
 <pre><code class="language-solidity">IERC20 public token;
 </code></pre>
 <h3 id="amount"><a class="header" href="#amount">amount</a></h3>
+<p>The amount expected to be approved for transfer by the treasury</p>
 <pre><code class="language-solidity">uint256 public amount;
 </code></pre>
 <h3 id="treasury-1"><a class="header" href="#treasury-1">treasury</a></h3>
+<p>The address from which tokens will be sent</p>
 <pre><code class="language-solidity">address public treasury;
 </code></pre>
 <h2 id="functions-3"><a class="header" href="#functions-3">Functions</a></h2>
 <h3 id="constructor-2"><a class="header" href="#constructor-2">constructor</a></h3>
+<p>Initializes ownership of the contract</p>
+<p><em>Ownable in OpenZeppelin v5 accepts no parameters; if using v4, passing msg.sender is correct</em></p>
 <pre><code class="language-solidity">constructor() payable Ownable(msg.sender);
 </code></pre>
 <h3 id="airdrop-1"><a class="header" href="#airdrop-1">airdrop</a></h3>
+<p>Distributes tokens to multiple recipients in one transaction</p>
+<p><em>Requires the treasury to approve this contract to transfer at least <code>amount</code></em></p>
 <pre><code class="language-solidity">function airdrop(address[] calldata receivers, uint256[] calldata amounts) external onlyOwner;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>receivers</code></td><td><code>address[]</code></td><td>List of recipient addresses</td></tr>
+<tr><td><code>amounts</code></td><td><code>uint256[]</code></td><td>List of token amounts for each recipient (must match receivers length)</td></tr>
+</tbody></table>
+</div>
 <h3 id="initialize-1"><a class="header" href="#initialize-1">initialize</a></h3>
+<p>Initializes the contract with configuration data</p>
+<p><em>This function can only be called once by the DeployManager during deployment</em></p>
 <pre><code class="language-solidity">function initialize(bytes memory _initData) external override notInitialized returns (bool);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_initData</code></td><td><code>bytes</code></td><td>Encoded data containing deployManager, token, amount, treasury, and owner</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>True if initialization is successful</td></tr>
+</tbody></table>
+</div>
 <h3 id="getinitdata-1"><a class="header" href="#getinitdata-1">getInitData</a></h3>
+<p>Helper to encode initialization data for deployment</p>
 <pre><code class="language-solidity">function getInitData(address _deployManager, address _token, uint256 _amount, address _treasury, address _owner)
     external
     pure
     returns (bytes memory);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_deployManager</code></td><td><code>address</code></td><td>Address of the DeployManager</td></tr>
+<tr><td><code>_token</code></td><td><code>address</code></td><td>Address of the ERC20 token</td></tr>
+<tr><td><code>_amount</code></td><td><code>uint256</code></td><td>Amount to be approved by treasury</td></tr>
+<tr><td><code>_treasury</code></td><td><code>address</code></td><td>Treasury address holding the tokens</td></tr>
+<tr><td><code>_owner</code></td><td><code>address</code></td><td>Owner address for this contract</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bytes</code></td><td>Encoded data ready for initialization</td></tr>
+</tbody></table>
+</div>
 <h2 id="errors-2"><a class="header" href="#errors-2">Errors</a></h2>
 <h3 id="arrayslengthmismatch"><a class="header" href="#arrayslengthmismatch">ArraysLengthMismatch</a></h3>
+<p><em>Raised when receivers and amounts arrays have different lengths</em></p>
 <pre><code class="language-solidity">error ArraysLengthMismatch();
 </code></pre>
 <h3 id="notenoughapprovedtokens"><a class="header" href="#notenoughapprovedtokens">NotEnoughApprovedTokens</a></h3>
+<p><em>Raised when the contract doesn't have enough approved tokens to complete the airdrop</em></p>
 <pre><code class="language-solidity">error NotEnoughApprovedTokens();
 </code></pre>
 <h3 id="transferfailed"><a class="header" href="#transferfailed">TransferFailed</a></h3>
+<p><em>Raised if a token transfer fails</em></p>
 <pre><code class="language-solidity">error TransferFailed();
 </code></pre>
 <h3 id="batchsizeexceeded-1"><a class="header" href="#batchsizeexceeded-1">BatchSizeExceeded</a></h3>
+<p><em>Raised when trying to airdrop to more than MAX_AIRDROP_BATCH_SIZE addresses</em></p>
 <pre><code class="language-solidity">error BatchSizeExceeded();
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="contents-3"><a class="header" href="#contents-3">Contents</a></h1>
 <ul>
-<li><a href="src/ERC721Airdroper/ERC721Airdroper.sol/contract.ERC721Airdroper.html">ERC721Airdroper</a></li>
+<li><a href="src%5CERC721Airdroper/ERC721Airdroper.sol%5Ccontract.ERC721Airdroper.html">ERC721Airdroper</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="erc721airdroper"><a class="header" href="#erc721airdroper">ERC721Airdroper</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/ERC721Airdroper/ERC721Airdroper.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CERC721Airdroper%5CERC721Airdroper.sol">Git Source</a></p>
 <p><strong>Inherits:</strong>
-<a href="src/ERC721Airdroper/ERC721Airdroper.sol//src/UtilityContract/AbstractUtilityContract.sol/abstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable</p>
+<a href="src%5CERC721Airdroper%5CERC721Airdroper.sol//src%5CUtilityContract%5CAbstractUtilityContract.sol%5Cabstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable2Step</p>
+<p><strong>Author:</strong>
+Solidity University</p>
+<p>Allows owner to distribute ERC721 NFTs from treasury to multiple recipients.</p>
+<p><em>Inherits from AbstractUtilityContract for DeployManager integration and Ownable2Step for ownership control.</em></p>
 <h2 id="state-variables-3"><a class="header" href="#state-variables-3">State Variables</a></h2>
 <h3 id="max_airdrop_batch_size-2"><a class="header" href="#max_airdrop_batch_size-2">MAX_AIRDROP_BATCH_SIZE</a></h3>
+<p>Maximum number of recipients allowed in a single airdrop batch</p>
 <pre><code class="language-solidity">uint256 public constant MAX_AIRDROP_BATCH_SIZE = 300;
 </code></pre>
 <h3 id="token-2"><a class="header" href="#token-2">token</a></h3>
+<p>The ERC721 token to be distributed</p>
 <pre><code class="language-solidity">IERC721 public token;
 </code></pre>
 <h3 id="treasury-2"><a class="header" href="#treasury-2">treasury</a></h3>
+<p>The address from which tokens will be sent</p>
 <pre><code class="language-solidity">address public treasury;
 </code></pre>
 <h2 id="functions-4"><a class="header" href="#functions-4">Functions</a></h2>
 <h3 id="constructor-3"><a class="header" href="#constructor-3">constructor</a></h3>
+<p>Initializes ownership of the contract</p>
 <pre><code class="language-solidity">constructor() payable Ownable(msg.sender);
 </code></pre>
 <h3 id="airdrop-2"><a class="header" href="#airdrop-2">airdrop</a></h3>
+<p>Distributes ERC721 tokens to multiple recipients in one transaction</p>
+<p><em>Requires treasury to approve this contract with setApprovalForAll.</em></p>
 <pre><code class="language-solidity">function airdrop(address[] calldata receivers, uint256[] calldata tokenIds) external onlyOwner;
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>receivers</code></td><td><code>address[]</code></td><td>List of recipient addresses</td></tr>
+<tr><td><code>tokenIds</code></td><td><code>uint256[]</code></td><td>List of token IDs for each recipient (must match receivers length)</td></tr>
+</tbody></table>
+</div>
 <h3 id="initialize-2"><a class="header" href="#initialize-2">initialize</a></h3>
+<p>Initializes the contract with configuration data</p>
+<p><em>This function can only be called once by the DeployManager during deployment</em></p>
 <pre><code class="language-solidity">function initialize(bytes memory _initData) external override notInitialized returns (bool);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_initData</code></td><td><code>bytes</code></td><td>Encoded data containing deployManager, token, treasury, and owner</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>True if initialization is successful</td></tr>
+</tbody></table>
+</div>
 <h3 id="getinitdata-2"><a class="header" href="#getinitdata-2">getInitData</a></h3>
+<p>Helper to encode initialization data for deployment</p>
 <pre><code class="language-solidity">function getInitData(address _deployManager, address _token, address _treasury, address _owner)
     external
     pure
     returns (bytes memory);
 </code></pre>
-<h2 id="errors-3"><a class="header" href="#errors-3">Errors</a></h2>
-<h3 id="arrayslengthmismatch-1"><a class="header" href="#arrayslengthmismatch-1">ArraysLengthMismatch</a></h3>
-<pre><code class="language-solidity">error ArraysLengthMismatch();
-</code></pre>
-<h3 id="needtoapprovetokens-1"><a class="header" href="#needtoapprovetokens-1">NeedToApproveTokens</a></h3>
-<pre><code class="language-solidity">error NeedToApproveTokens();
-</code></pre>
-<h3 id="batchsizeexceeded-2"><a class="header" href="#batchsizeexceeded-2">BatchSizeExceeded</a></h3>
-<pre><code class="language-solidity">error BatchSizeExceeded();
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="contents-4"><a class="header" href="#contents-4">Contents</a></h1>
-<ul>
-<li><a href="src/UtilityContract/AbstractUtilityContract.sol/abstract.AbstractUtilityContract.html">AbstractUtilityContract</a></li>
-<li><a href="src/UtilityContract/IUtilityContract.sol/interface.IUtilityContract.html">IUtilityContract</a></li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="abstractutilitycontract"><a class="header" href="#abstractutilitycontract">AbstractUtilityContract</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/UtilityContract/AbstractUtilityContract.sol">Git Source</a></p>
-<p><strong>Inherits:</strong>
-<a href="src/UtilityContract/AbstractUtilityContract.sol//src/UtilityContract/IUtilityContract.sol/interface.IUtilityContract.html">IUtilityContract</a>, ERC165</p>
-<p><strong>Author:</strong>
-Solidity University</p>
-<p>This abstract contract provides a base implementation for utility contracts.</p>
-<p><em>Utility contracts should inherit from this contract and implement the initialize function.</em></p>
-<h2 id="state-variables-4"><a class="header" href="#state-variables-4">State Variables</a></h2>
-<h3 id="initialized"><a class="header" href="#initialized">initialized</a></h3>
-<pre><code class="language-solidity">bool public initialized;
-</code></pre>
-<h3 id="deploymanager-1"><a class="header" href="#deploymanager-1">deployManager</a></h3>
-<pre><code class="language-solidity">address public deployManager;
-</code></pre>
-<h2 id="functions-5"><a class="header" href="#functions-5">Functions</a></h2>
-<h3 id="notinitialized"><a class="header" href="#notinitialized">notInitialized</a></h3>
-<pre><code class="language-solidity">modifier notInitialized();
-</code></pre>
-<h3 id="initialize-3"><a class="header" href="#initialize-3">initialize</a></h3>
-<pre><code class="language-solidity">function initialize(bytes memory _initData) external virtual override returns (bool);
-</code></pre>
-<h3 id="setdeploymanager"><a class="header" href="#setdeploymanager">setDeployManager</a></h3>
-<pre><code class="language-solidity">function setDeployManager(address _deployManager) internal virtual;
-</code></pre>
-<h3 id="validatedeploymanager"><a class="header" href="#validatedeploymanager">validateDeployManager</a></h3>
-<pre><code class="language-solidity">function validateDeployManager(address _deployManager) internal view returns (bool);
-</code></pre>
-<h3 id="getdeploymanager"><a class="header" href="#getdeploymanager">getDeployManager</a></h3>
-<pre><code class="language-solidity">function getDeployManager() external view virtual override returns (address);
-</code></pre>
-<h3 id="supportsinterface-1"><a class="header" href="#supportsinterface-1">supportsInterface</a></h3>
-<pre><code class="language-solidity">function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool);
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="iutilitycontract"><a class="header" href="#iutilitycontract">IUtilityContract</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/UtilityContract/IUtilityContract.sol">Git Source</a></p>
-<p><strong>Inherits:</strong>
-IERC165</p>
-<p><strong>Author:</strong>
-Solidity University</p>
-<p>This interface defines the functions and events for utility contracts.</p>
-<p><em>Utility contracts should implement this interface to be compatible with the DeployManager.</em></p>
-<h2 id="functions-6"><a class="header" href="#functions-6">Functions</a></h2>
-<h3 id="initialize-4"><a class="header" href="#initialize-4">initialize</a></h3>
-<p>Initializes the utility contract with the provided data</p>
-<p><em>This function should be called by the DeployManager after deploying the contract</em></p>
-<pre><code class="language-solidity">function initialize(bytes memory _initData) external returns (bool);
-</code></pre>
 <p><strong>Parameters</strong></p>
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>_initData</code></td><td><code>bytes</code></td><td>The initialization data for the utility contract</td></tr>
+<tr><td><code>_deployManager</code></td><td><code>address</code></td><td>Address of the DeployManager</td></tr>
+<tr><td><code>_token</code></td><td><code>address</code></td><td>Address of the ERC721 token</td></tr>
+<tr><td><code>_treasury</code></td><td><code>address</code></td><td>Treasury address holding NFTs</td></tr>
+<tr><td><code>_owner</code></td><td><code>address</code></td><td>Owner address for this contract</td></tr>
 </tbody></table>
 </div>
 <p><strong>Returns</strong></p>
 <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
-<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>True if the initialization was successful</td></tr>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bytes</code></td><td>Encoded data ready for initialization</td></tr>
+</tbody></table>
+</div>
+<h2 id="errors-3"><a class="header" href="#errors-3">Errors</a></h2>
+<h3 id="arrayslengthmismatch-1"><a class="header" href="#arrayslengthmismatch-1">ArraysLengthMismatch</a></h3>
+<p><em>Raised when receivers and tokenIds arrays have different lengths</em></p>
+<pre><code class="language-solidity">error ArraysLengthMismatch();
+</code></pre>
+<h3 id="batchsizeexceeded-2"><a class="header" href="#batchsizeexceeded-2">BatchSizeExceeded</a></h3>
+<p><em>Raised when trying to airdrop to more than MAX_AIRDROP_BATCH_SIZE addresses</em></p>
+<pre><code class="language-solidity">error BatchSizeExceeded();
+</code></pre>
+<h3 id="needtoapprovetokens-1"><a class="header" href="#needtoapprovetokens-1">NeedToApproveTokens</a></h3>
+<p><em>Raised when contract is not approved to transfer all tokens from treasury</em></p>
+<pre><code class="language-solidity">error NeedToApproveTokens();
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="contents-4"><a class="header" href="#contents-4">Contents</a></h1>
+<ul>
+<li><a href="src%5CUtilityContract/AbstractUtilityContract.sol%5Cabstract.AbstractUtilityContract.html">AbstractUtilityContract</a></li>
+<li><a href="src%5CUtilityContract/IUtilityContract.sol%5Cinterface.IUtilityContract.html">IUtilityContract</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="abstractutilitycontract"><a class="header" href="#abstractutilitycontract">AbstractUtilityContract</a></h1>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CUtilityContract%5CAbstractUtilityContract.sol">Git Source</a></p>
+<p><strong>Inherits:</strong>
+<a href="src%5CUtilityContract%5CAbstractUtilityContract.sol//src%5CUtilityContract%5CIUtilityContract.sol%5Cinterface.IUtilityContract.html">IUtilityContract</a>, ERC165</p>
+<p><strong>Author:</strong>
+Solidity University</p>
+<p>Provides common logic for utility contracts to interact with the DeployManager.</p>
+<p><em>Inherit this abstract contract in custom utility contracts and override <code>initialize</code> if needed.</em></p>
+<h2 id="state-variables-4"><a class="header" href="#state-variables-4">State Variables</a></h2>
+<h3 id="initialized"><a class="header" href="#initialized">initialized</a></h3>
+<p>Flag indicating if the contract has already been initialized</p>
+<pre><code class="language-solidity">bool public initialized;
+</code></pre>
+<h3 id="deploymanager-1"><a class="header" href="#deploymanager-1">deployManager</a></h3>
+<p>Address of the DeployManager that deployed or manages this contract</p>
+<pre><code class="language-solidity">address public deployManager;
+</code></pre>
+<h2 id="functions-5"><a class="header" href="#functions-5">Functions</a></h2>
+<h3 id="notinitialized"><a class="header" href="#notinitialized">notInitialized</a></h3>
+<p><em>Ensures that the function can only be called before the contract is initialized</em></p>
+<pre><code class="language-solidity">modifier notInitialized();
+</code></pre>
+<h3 id="initialize-3"><a class="header" href="#initialize-3">initialize</a></h3>
+<p>Initializes the contract with encoded initialization data</p>
+<p><em>Typically called by the DeployManager right after deploying the clone</em></p>
+<pre><code class="language-solidity">function initialize(bytes memory _initData) external virtual override returns (bool);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_initData</code></td><td><code>bytes</code></td><td>Encoded address of the DeployManager</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>Returns true if initialization succeeds</td></tr>
+</tbody></table>
+</div>
+<h3 id="setdeploymanager"><a class="header" href="#setdeploymanager">setDeployManager</a></h3>
+<p><em>Sets the DeployManager address after validation</em></p>
+<pre><code class="language-solidity">function setDeployManager(address _deployManager) internal virtual;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_deployManager</code></td><td><code>address</code></td><td>The DeployManager address</td></tr>
+</tbody></table>
+</div>
+<h3 id="validatedeploymanager"><a class="header" href="#validatedeploymanager">validateDeployManager</a></h3>
+<p><em>Validates the DeployManager by checking its interface support</em></p>
+<pre><code class="language-solidity">function validateDeployManager(address _deployManager) internal view returns (bool);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_deployManager</code></td><td><code>address</code></td><td>The address to validate</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>True if the address implements IDeployManager</td></tr>
+</tbody></table>
+</div>
+<h3 id="getdeploymanager"><a class="header" href="#getdeploymanager">getDeployManager</a></h3>
+<p>Returns the stored DeployManager address</p>
+<pre><code class="language-solidity">function getDeployManager() external view virtual override returns (address);
+</code></pre>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>address</code></td><td>The DeployManager address</td></tr>
+</tbody></table>
+</div>
+<h3 id="supportsinterface-1"><a class="header" href="#supportsinterface-1">supportsInterface</a></h3>
+<p>Indicates support for IUtilityContract and ERC165 interfaces</p>
+<pre><code class="language-solidity">function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>interfaceId</code></td><td><code>bytes4</code></td><td>The interface identifier to check</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>True if the contract supports the provided interface</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="iutilitycontract"><a class="header" href="#iutilitycontract">IUtilityContract</a></h1>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CUtilityContract%5CIUtilityContract.sol">Git Source</a></p>
+<p><strong>Inherits:</strong>
+IERC165</p>
+<p><strong>Author:</strong>
+Solidity University</p>
+<p>This interface defines the core functions and errors for utility contracts.</p>
+<p><em>Any contract intended to work with the DeployManager must implement this interface.</em></p>
+<h2 id="functions-6"><a class="header" href="#functions-6">Functions</a></h2>
+<h3 id="initialize-4"><a class="header" href="#initialize-4">initialize</a></h3>
+<p>Initializes the utility contract with the provided data</p>
+<p><em>This function should be called by the DeployManager right after the contract is cloned.</em></p>
+<pre><code class="language-solidity">function initialize(bytes memory _initData) external returns (bool);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_initData</code></td><td><code>bytes</code></td><td>Encoded initialization parameters for the utility contract</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>True if initialization was successful</td></tr>
 </tbody></table>
 </div>
 <h3 id="getdeploymanager-1"><a class="header" href="#getdeploymanager-1">getDeployManager</a></h3>
+<p>Returns the address of the DeployManager linked to this utility contract</p>
 <pre><code class="language-solidity">function getDeployManager() external view returns (address);
 </code></pre>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>address</code></td><td>The DeployManager address</td></tr>
+</tbody></table>
+</div>
 <h2 id="errors-4"><a class="header" href="#errors-4">Errors</a></h2>
 <h3 id="deploymanagercannotbezero"><a class="header" href="#deploymanagercannotbezero">DeployManagerCannotBeZero</a></h3>
-<p><em>Reverts if the deploy manager is not set or is invalid</em></p>
+<p><em>Reverts if the DeployManager address is zero (not set)</em></p>
 <pre><code class="language-solidity">error DeployManagerCannotBeZero();
 </code></pre>
 <h3 id="notdeploymanager"><a class="header" href="#notdeploymanager">NotDeployManager</a></h3>
+<p><em>Reverts if a function is called by someone other than the DeployManager</em></p>
 <pre><code class="language-solidity">error NotDeployManager();
 </code></pre>
 <h3 id="failedtodeploymanager"><a class="header" href="#failedtodeploymanager">FailedToDeployManager</a></h3>
+<p><em>Reverts if setting the DeployManager fails</em></p>
 <pre><code class="language-solidity">error FailedToDeployManager();
 </code></pre>
 <h3 id="alreadyinitialized"><a class="header" href="#alreadyinitialized">AlreadyInitialized</a></h3>
+<p><em>Reverts if the contract has already been initialized</em></p>
 <pre><code class="language-solidity">error AlreadyInitialized();
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="contents-5"><a class="header" href="#contents-5">Contents</a></h1>
 <ul>
-<li><a href="src/Vesting/IVesting.sol/interface.IVesting.html">IVesting</a></li>
-<li><a href="src/Vesting/Vesting.sol/contract.Vesting.html">Vesting</a></li>
-<li><a href="src/Vesting/VestingLib.sol/library.VestingLib.html">VestingLib</a></li>
+<li><a href="src%5CVesting/IVesting.sol%5Cinterface.IVesting.html">IVesting</a></li>
+<li><a href="src%5CVesting/Vesting.sol%5Ccontract.Vesting.html">Vesting</a></li>
+<li><a href="src%5CVesting/VestingLib.sol%5Clibrary.VestingLib.html">VestingLib</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ivesting"><a class="header" href="#ivesting">IVesting</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/Vesting/IVesting.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CVesting%5CIVesting.sol">Git Source</a></p>
 <p>Provides a standard interface for token vesting contracts</p>
 <h2 id="functions-7"><a class="header" href="#functions-7">Functions</a></h2>
 <h3 id="claim"><a class="header" href="#claim">claim</a></h3>
@@ -801,11 +1101,11 @@ Solidity University</p>
 <tr><td><code>minClaimAmount</code></td><td><code>uint256</code></td><td>Minimum amount that can be claimed in a single transaction</td></tr>
 </tbody></table>
 </div><div style="break-before: page; page-break-before: always;"></div><h1 id="vesting"><a class="header" href="#vesting">Vesting</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/Vesting/Vesting.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CVesting%5CVesting.sol">Git Source</a></p>
 <p><strong>Inherits:</strong>
-<a href="src/Vesting/Vesting.sol//src/Vesting/IVesting.sol/interface.IVesting.html">IVesting</a>, <a href="src/Vesting/Vesting.sol//src/UtilityContract/AbstractUtilityContract.sol/abstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable</p>
+<a href="src%5CVesting%5CVesting.sol//src%5CVesting%5CIVesting.sol%5Cinterface.IVesting.html">IVesting</a>, <a href="src%5CVesting%5CVesting.sol//src%5CUtilityContract%5CAbstractUtilityContract.sol%5Cabstract.AbstractUtilityContract.html">AbstractUtilityContract</a>, Ownable2Step</p>
 <p>Manages token vesting schedules for beneficiaries</p>
-<p><em>Inherits IVesting, AbstractUtilityContract, Ownable</em></p>
+<p><em>Inherits IVesting, AbstractUtilityContract, Ownable2Step</em></p>
 <h2 id="state-variables-5"><a class="header" href="#state-variables-5">State Variables</a></h2>
 <h3 id="token-3"><a class="header" href="#token-3">token</a></h3>
 <p>The ERC20 token that is being vested</p>
@@ -847,8 +1147,20 @@ Solidity University</p>
 </tbody></table>
 </div>
 <h3 id="initialize-5"><a class="header" href="#initialize-5">initialize</a></h3>
+<p>Initializes the contract with encoded initialization data</p>
+<p><em>Typically called by the DeployManager right after deploying the clone</em></p>
 <pre><code class="language-solidity">function initialize(bytes memory _initData) external override notInitialized returns (bool);
 </code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>_initData</code></td><td><code>bytes</code></td><td>Encoded address of the DeployManager</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>bool</code></td><td>Returns true if initialization succeeds</td></tr>
+</tbody></table>
+</div>
 <h3 id="vestedamount-1"><a class="header" href="#vestedamount-1">vestedAmount</a></h3>
 <p>Returns the total amount of tokens vested for a beneficiary at the current time</p>
 <pre><code class="language-solidity">function vestedAmount(address _claimer) public view returns (uint256);
@@ -907,7 +1219,7 @@ Solidity University</p>
 <tr><td><code>&lt;none&gt;</code></td><td><code>bytes</code></td><td>ABI-encoded initialization data</td></tr>
 </tbody></table>
 </div><div style="break-before: page; page-break-before: always;"></div><h1 id="vestinglib"><a class="header" href="#vestinglib">VestingLib</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/Vesting/VestingLib.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CVesting%5CVestingLib.sol">Git Source</a></p>
 <p>Provides utility functions for calculating vested and claimable token amounts</p>
 <h2 id="functions-9"><a class="header" href="#functions-9">Functions</a></h2>
 <h3 id="vestedamount-2"><a class="header" href="#vestedamount-2">vestedAmount</a></h3>
@@ -938,7 +1250,7 @@ Solidity University</p>
 <tr><td><code>&lt;none&gt;</code></td><td><code>uint256</code></td><td>The amount of tokens that can be claimed</td></tr>
 </tbody></table>
 </div><div style="break-before: page; page-break-before: always;"></div><h1 id="erc20mock"><a class="header" href="#erc20mock">ERC20Mock</a></h1>
-<p><a href="https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/ERC20Mock.sol">Git Source</a></p>
+<p><a href="https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src%5CERC20Mock.sol">Git Source</a></p>
 <p><strong>Inherits:</strong>
 ERC20</p>
 <h2 id="functions-10"><a class="header" href="#functions-10">Functions</a></h2>
@@ -989,6 +1301,7 @@ ERC20</p>
             });
         });
         </script>
+
 
     </div>
     </body>

@@ -39,11 +39,23 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -84,10 +96,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -121,7 +136,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -132,7 +147,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/SolidityUniversity/smart-deployer" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/AleksandrWhite-T/smart-deployer" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -162,18 +182,46 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="smart-deployer"><a class="header" href="#smart-deployer">Smart Deployer</a></h1>
-<p>Smart Deployer is a universal architecture for organizing and managing paid smart contract deployments.</p>
-<p>This solution allows developers to:</p>
+<p>Smart Deployer is a universal solution for organizing and managing paid smart contract deployments.</p>
+<p>📚 <a href="https://aleksandrwhite-t.github.io/smart-deployer/">Contracts documentation</a> (generated with <code>forge doc</code>)<br />
+🎓 <a href="https://bootcamp.solidity.university">Solidity Bootcamp</a></p>
+<p>🧾 Every contract in this repository is fully documented using NatSpec — including deployment instructions, configuration details, and extensibility tips. Developed by Solidity University, following best practices and released under the MIT license, allows developers to:</p>
 <ul>
-<li>Create their own Smart Deployer (DeployManager.sol)</li>
-<li>Create &amp; connect utility contracts using template</li>
+<li>Deploy your own <code>DeployManager.sol</code></li>
+<li>Create &amp; connect utility contracts using <a href="https://github.com/SolidityUniversity/smart-deployer/blob/main/src/UtilityContract/AbstractUtilityContract.sol">template</a></li>
 <li>Monetize the deployment of utility contracts</li>
+<li>Enable\disable contracts, fees any time</li>
 </ul>
+<p><img src="./docs/smart-deployer.png" alt="Smart deployer diagram" /></p>
 <blockquote>
-<p>The repository is currently under development.
-We are building it as part of the Solidity University Bootcamp program.</p>
+<p>💡 We are building it as part of the <a href="https://bootcamp.solidity.university">Solidity University Bootcamp</a> program. Learn Solidity with us at <a href="https://solidity.university">Solidity University</a>!</p>
 </blockquote>
-<p>👉 More details: <a href="https://bootcamp.solidity.university">bootcamp.solidity.university</a></p>
+<hr />
+<h2 id="-getting-started"><a class="header" href="#-getting-started">🚀 Getting Started</a></h2>
+<p>To start working with this repository, clone it and install all necessary dependencies.</p>
+<pre><code class="language-bash">git clone https://github.com/solidity-university/smart-deployer.git
+cd smart-deployer
+yarn install
+</code></pre>
+<blockquote>
+<p>✅ Make sure you have <a href="https://book.getfoundry.sh/getting-started/installation">Foundry</a> installed globally before continuing:</p>
+</blockquote>
+<hr />
+<h2 id="-build-the-project"><a class="header" href="#-build-the-project">🛠 Build the Project</a></h2>
+<p>Compile the contracts using:</p>
+<pre><code class="language-bash">forge build
+</code></pre>
+<p>You can run 🧪 tests using:</p>
+<pre><code class="language-bash">forge test
+</code></pre>
+<h2 id="-generate-documentation"><a class="header" href="#-generate-documentation">📚 Generate Documentation</a></h2>
+<p>To generate contract documentation:</p>
+<pre><code class="language-bash">forge doc --build --out docs
+</code></pre>
+<p>The generated site is written to <code>docs/book/</code>. After you enable <strong>GitHub Pages</strong> (Source: <strong>GitHub Actions</strong>) in the repository settings, pushes to <code>main</code> or <code>smart-deployer</code> deploy the book to <a href="https://aleksandrwhite-t.github.io/smart-deployer/">https://aleksandrwhite-t.github.io/smart-deployer/</a>. Do not add a <code>.gitignore</code> inside <code>docs/</code> that hides the mdBook sources.</p>
+<p><strong>Note:</strong> The user site <code>https://USERNAME.github.io/</code> without a path applies only to a repository named <code>USERNAME.github.io</code>. This project uses <strong>project Pages</strong> at the URL above.</p>
+<hr />
+<p>Feel free to contribute or open issues to improve the project 💡</p>
 
                     </main>
 
@@ -216,6 +264,7 @@ We are building it as part of the Solidity University Bootcamp program.</p>
 
         <!-- Custom JS scripts -->
         <script src="solidity.min.js"></script>
+
 
 
     </div>

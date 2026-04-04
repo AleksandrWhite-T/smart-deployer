@@ -1,15 +1,15 @@
 # DeployManager
-[Git Source](https://github.com/SolidityUniversity/smart-deployer/blob/85c11aeeaafc38269bb5a66ecafac729e84c7b17/src/DeployManager/DeployManager.sol)
+[Git Source](https://github.com/AleksandrWhite-T/smart-deployer/blob/fcdd7b869ebde1b5181025f4a58f498b7f3fdbbe/src\DeployManager\DeployManager.sol)
 
 **Inherits:**
-[IDeployManager](/src/DeployManager/IDeployManager.sol/interface.IDeployManager.md), Ownable, ERC165
+[IDeployManager](/src\DeployManager\IDeployManager.sol\interface.IDeployManager.md), Ownable2Step, ERC165
 
 **Author:**
 Solidity University
 
 Allows users to deploy utility contracts by cloning registered templates.
 
-*Uses OpenZeppelin's Clones and Ownable; assumes templates implement IUtilityContract.*
+*Uses OpenZeppelin's Clones and Ownable2Step; assumes templates implement IUtilityContract.*
 
 
 ## State Variables
@@ -49,7 +49,7 @@ function deploy(address _utilityContract, bytes calldata _initData) external pay
 
 |Name|Type|Description|
 |----|----|-----------|
-|`_utilityContract`|`address`|The address of the utility contract template|
+|`_utilityContract`|`address`|The address of the registered utility contract|
 |`_initData`|`bytes`|The initialization data for the utility contract|
 
 **Returns**
@@ -100,7 +100,7 @@ function supportsInterface(bytes4 interfaceId) public view virtual override(IERC
 ```solidity
 struct ContractInfo {
     uint256 fee;
-    bool isActive;
+    bool isDeployablel;
     uint256 registredAt;
 }
 ```
