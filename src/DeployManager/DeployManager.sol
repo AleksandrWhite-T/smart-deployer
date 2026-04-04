@@ -2,7 +2,7 @@
 pragma solidity ^0.8.29;
 
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "../UtilityContract/IUtilityContract.sol";
 import "./IDeployManager.sol";
@@ -10,8 +10,8 @@ import "./IDeployManager.sol";
 /// @title DeployManager - Factory for utility contracts
 /// @author Solidity University
 /// @notice Allows users to deploy utility contracts by cloning registered templates.
-/// @dev Uses OpenZeppelin's Clones and Ownable; assumes templates implement IUtilityContract.
-contract DeployManager is IDeployManager, Ownable, ERC165 {
+/// @dev Uses OpenZeppelin's Clones and Ownable2Step; assumes templates implement IUtilityContract.
+contract DeployManager is IDeployManager, Ownable2Step, ERC165 {
     constructor() payable Ownable(msg.sender) {}
 
     struct ContractInfo {

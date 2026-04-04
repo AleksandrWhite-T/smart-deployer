@@ -3,13 +3,13 @@ pragma solidity ^0.8.29;
 
 import "../UtilityContract/AbstractUtilityContract.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
 
 /// @title ERC1155Airdroper - Airdrop utility for ERC1155 tokens
 /// @author ...
 /// @notice Allows the contract owner to distribute ERC1155 tokens to multiple recipients in a single transaction.
-/// @dev Inherits from AbstractUtilityContract for DeployManager integration and Ownable for access control.
-contract ERC1155Airdroper is AbstractUtilityContract, Ownable {
+/// @dev Inherits from AbstractUtilityContract for DeployManager integration and Ownable2Step for access control.
+contract ERC1155Airdroper is AbstractUtilityContract, Ownable2Step {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
@@ -73,14 +73,15 @@ contract ERC1155Airdroper is AbstractUtilityContract, Ownable {
         // Ensure the amounts and token IDs arrays have the same length
         require(amounts.length == tokenIds.length, AmountsLengthMismatch());
 
-        // Ensure the treasury has approved this contract to transfer tokens
-        require(token.isApprovedForAll(treasury, address(this)), NeedToApproveTokens());
-
         address treasuryAddress = treasury;
+        IERC1155 token_ = token;
+
+        // Ensure the treasury has approved this contract to transfer tokens
+        require(token_.isApprovedForAll(treasuryAddress, address(this)), NeedToApproveTokens());
 
         // Distribute tokens to each recipient
         for (uint256 i = 0; i < amounts.length;) {
-            token.safeTransferFrom(treasuryAddress, receivers[i], tokenIds[i], amounts[i], "");
+            token_.safeTransferFrom(treasuryAddress, receivers[i], tokenIds[i], amounts[i], "");
             unchecked {
                 ++i; // Safe increment without overflow checks
             }
@@ -106,8 +107,8 @@ contract ERC1155Airdroper is AbstractUtilityContract, Ownable {
         token = IERC1155(_token);
         treasury = _treasury;
 
-        // Transfer contract ownership to the provided owner
-        Ownable.transferOwnership(_owner);
+        // Transfer contract ownership to the provided owner (direct; avoids pending state from Ownable2Step.transferOwnership)
+        _transferOwnership(_owner);
 
         // Mark contract as initialized
         initialized = true;

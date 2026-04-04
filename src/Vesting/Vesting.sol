@@ -3,15 +3,15 @@ pragma solidity ^0.8.29;
 
 import "../UtilityContract/AbstractUtilityContract.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
 
 import {VestingLib} from "./VestingLib.sol";
 import "./IVesting.sol";
 
 /// @title Vesting Contract
 /// @notice Manages token vesting schedules for beneficiaries
-/// @dev Inherits IVesting, AbstractUtilityContract, Ownable
-contract Vesting is IVesting, AbstractUtilityContract, Ownable {
+/// @dev Inherits IVesting, AbstractUtilityContract, Ownable2Step
+contract Vesting is IVesting, AbstractUtilityContract, Ownable2Step {
     using VestingLib for IVesting.VestingInfo;
 
     /// @notice Initializes the contract with deploy manager, token, and owner
@@ -121,7 +121,7 @@ contract Vesting is IVesting, AbstractUtilityContract, Ownable {
         setDeployManager(_deployManager);
 
         token = IERC20(_token);
-        Ownable.transferOwnership(_owner);
+        _transferOwnership(_owner);
 
         initialized = true;
         return true;

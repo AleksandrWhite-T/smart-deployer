@@ -3,13 +3,13 @@ pragma solidity ^0.8.29;
 
 import "../UtilityContract/AbstractUtilityContract.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
 
 /// @title ERC20Airdroper - Airdrop utility contract for ERC20 tokens
 /// @author Solidity University
 /// @notice This contract allows the owner to distribute (airdrop) ERC20 tokens to multiple recipients.
-/// @dev Inherits from AbstractUtilityContract for DeployManager integration and Ownable for ownership control.
-contract ERC20Airdroper is AbstractUtilityContract, Ownable {
+/// @dev Inherits from AbstractUtilityContract for DeployManager integration and Ownable2Step for ownership control.
+contract ERC20Airdroper is AbstractUtilityContract, Ownable2Step {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
@@ -69,14 +69,15 @@ contract ERC20Airdroper is AbstractUtilityContract, Ownable {
         // Ensure both arrays match in length
         require(receivers.length == amounts.length, ArraysLengthMismatch());
 
-        // Ensure sufficient allowance is approved
-        require(token.allowance(treasury, address(this)) >= amount, NotEnoughApprovedTokens());
-
         address treasuryAddress = treasury;
+        IERC20 token_ = token;
+
+        // Ensure sufficient allowance is approved
+        require(token_.allowance(treasuryAddress, address(this)) >= amount, NotEnoughApprovedTokens());
 
         // Loop through all recipients and transfer tokens
         for (uint256 i = 0; i < receivers.length;) {
-            require(token.transferFrom(treasuryAddress, receivers[i], amounts[i]), TransferFailed());
+            require(token_.transferFrom(treasuryAddress, receivers[i], amounts[i]), TransferFailed());
             unchecked {
                 ++i;
             }
